@@ -19,11 +19,11 @@ public class TestPrim {
 		// testLambdaAndStream();
 		// testLambdaAndStreamBasedRuleRunning();
 		// testDefaultConstructor();
-		// testRxCold();
+		testRxCold();
 		// testRxColdCache();
 		// testRxHot();
-		//testZipExceptions();
-		testHttpObservable();
+		// testZipExceptions();
+		// testHttpObservable();
 	}
 
 	private static void testLambdaAndStream() {
@@ -120,15 +120,22 @@ public class TestPrim {
 			 * s)); Thread.sleep(2000);
 			 */
 			Observable<Integer> fu2 = Observable.<Integer>create(sub -> {
-				for (int i = 0; i < 5; i++) {
-					try {
-						Thread.currentThread().sleep(2000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+				Runnable run1 = new Runnable() {
+					@Override
+					public void run() {
+						for (int i = 0; i < 5; i++) {
+							sub.onNext(i);
+							try {
+								Thread.currentThread().sleep(2000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+						sub.onCompleted();
 					}
-					sub.onNext(i);
-				}
-				sub.onCompleted();
+				};
+				Thread th1 = new Thread(run1);
+				th1.start();
 			}).doOnCompleted(new Action0() {
 
 				@Override
@@ -138,15 +145,25 @@ public class TestPrim {
 			});
 
 			Observable<SomeRanClass> fu3 = Observable.<SomeRanClass>create(sub -> {
-				for (int i = 0; i < 5; i++) {
-					try {
-						Thread.currentThread().sleep(2000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+				Runnable run2 = new Runnable() {
+
+					@Override
+					public void run() {
+
+						for (int i = 0; i < 5; i++) {
+							try {
+								Thread.currentThread().sleep(1500);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							sub.onNext(new SomeRanClass());
+						}
+						sub.onCompleted();
+
 					}
-					sub.onNext(new SomeRanClass());
-				}
-				sub.onCompleted();
+				};
+				Thread th2 = new Thread(run2);
+				th2.start();
 			}).doOnCompleted(new Action0() {
 
 				@Override
@@ -188,7 +205,8 @@ public class TestPrim {
 			sub.onNext("gimme black again");
 			sub.onCompleted();
 		});
-		//fu4 = fu4.onErrorResumeNext(fu5); // works on exceptions except when caused by .single()
+		// fu4 = fu4.onErrorResumeNext(fu5); // works on exceptions except when
+		// caused by .single()
 		fu4 = fu4.onErrorReturn(new Func1<Throwable, String>() {
 
 			@Override
@@ -274,7 +292,6 @@ public class TestPrim {
 	}
 
 	private static void testHttpObservable() {
-		
 	}
 }
 
