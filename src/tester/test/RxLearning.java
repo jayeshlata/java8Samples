@@ -1,21 +1,23 @@
 package com.mmt.gabbar.rx;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import org.springframework.core.task.TaskExecutor;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import java.util.stream.Collectors;
 
 import rx.Observable;
-import rx.Scheduler;
 import rx.functions.Func1;
 import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
 
 public class RxLearning {
 
+	class InnerClass{
+		
+	}
+	
 	public static void testRx(){
 		
 		
@@ -55,7 +57,7 @@ public class RxLearning {
 			Thread.sleep(700);
 			System.out.println("Second Subscription");
 			obs1.subscribe(s -> System.out.println("Second1: " + s));
-			Thread.sleep(50000);
+			Thread.sleep(5000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -184,6 +186,20 @@ public class RxLearning {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private static void testFlatMap(){
+		List<String> strings =new ArrayList<>();
+		strings.add("Hello");
+		strings.add("My");
+		strings.add("Name");
+		
+		List<String> strings1 =new ArrayList<>();
+		strings1.add("Is");
+		strings1.add("Mayank");
+		strings1.add("Jandiyal");
+		
+		
 	}
 	
 	public static void main(String[] args) {
